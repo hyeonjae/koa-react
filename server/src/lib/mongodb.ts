@@ -1,13 +1,20 @@
 import * as mongoose from 'mongoose'
-import config from '../config'
+import * as dotenv from 'dotenv'
 
-const { host, port, database } = config.mongodb
-
-console.log(`mongodb port: ${port}`)
+dotenv.config()
 
 namespace mongodb {
   export let connect = async () => {
-    await mongoose.connect(`mongodb://${host}:${port}/${database}`)
+    const host = process.env.DB_HOST
+    const port = process.env.DB_PORT
+    const database = process.env.DB_DATABASE
+    const user = process.env.DB_USER
+    const pass = process.env.DB_PASSWORD
+
+    await mongoose.connect(`mongodb://${host}:${port}/${database}`, {
+      user,
+      pass
+    })
   }
 
   mongoose.connection.on('error', console.error)
